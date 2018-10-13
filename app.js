@@ -1,8 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const keys = require('./config/keys');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const cors = require('cors');
 
+const mongoose = require('mongoose');
 const userRoute = require('./api/routes/user');
 
 const app = express();
