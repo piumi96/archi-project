@@ -1,11 +1,20 @@
 const mongoose = require('mongoose');
 const keys = require('../config/keys')
 
-var userSchema = new mongoose.Schema({
+var truckSchema = new mongoose.Schema({
     username: {type: String, unique: true},
     password: String
 });
 
-var User = mongoose.model('User', userSchema);
+var publicSchema = new mongoose.Schema({
+    username: {type: String, unique: true},
+    password: String
+});
 
-module.exports = User;
+var Trucker = mongoose.model('Trucker', truckSchema);
+var Public = mongoose.model('Public', publicSchema);
+
+module.exports = {
+    Trucker: Trucker,
+    Public: Public
+}

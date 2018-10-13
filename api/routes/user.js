@@ -10,12 +10,14 @@ const userpw = keys.db.pw;
 
 const db = mongoose.connect('mongodb://'+userKey+':'+userpw+'@ds063946.mlab.com:63946/archi_project');
 const User = require('../../database/schemas');
+const Trucker = User.Trucker;
+const Public = User.Public;
 
 
 const router = express.Router();
 var saltRounds = 10;
-var truckDriver = new User();
-var publicUser = new User();
+var truckDriver = new Trucker();
+var publicUser = new Public();
 
 router.post('/register', (req, res) => {
    var username = req.body.username;
@@ -25,13 +27,22 @@ router.post('/register', (req, res) => {
     bcrypt.hash(password, saltRounds, function(err, hash){
         if(role === 'truckDriver'){
             truckDriver.username = username;
-            truckDriver.password = password;
+            truckDriver.password = hash;
+            
             truckDriver.save((err, savedDriver) => {
                 if(err){
                     console.log(err);
-                    res.status(500).json({
-                        success: false
-                    });
+                    if(err.code === 11000){
+                        res.status(501).json({
+                            has: true
+                        });
+                    }
+                    else{
+                        res.status(500).json({
+                            success: false
+                        });
+                    }
+                    
                 }
                 else{
                     console.log(savedDriver);
@@ -43,16 +54,24 @@ router.post('/register', (req, res) => {
         }
         else if(role === 'public'){
             publicUser.username = username;
-            publicUser.password = password;
+            publicUser.password = hash;
             publicUser.save((err, savedPublic) => {
             if(err){
                 console.log(err);
-                res.status(500).json({
-                    success: false
-                });
+                if(err.code === 11000){
+                    res.status(501).json({
+                        has: true
+                    });
+                }
+                else{
+                    res.status(500).json({
+                        success: false
+                    });
+                }
+                
             }
             else{
-                console.log(savedDriver);
+                console.log(savedPublic);
                 res.status(200).json({
                     success: true
                 });
@@ -62,20 +81,6 @@ router.post('/register', (req, res) => {
         }
     })
 
-   /* var newUser = new User();
-   newUser.username = username;
-   newUser.password = password;    
-    newUser.save(function(err, savedUser){
-        if(err){
-            console.log(err);
-            return res.status(500).send(err);
-        }
-        else{
-            res.status(200).send(savedUser);
-            return console.log(savedUser);
-        }
-   });  
- */
 });
 
 
