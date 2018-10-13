@@ -1,10 +1,16 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const keys = require('./config/keys');
+
+const userRoute = require('./api/routes/user');
 
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: true}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use('/', userRoute);
 
 app.use((req, res, next)=>{
     const error = {

@@ -2,9 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const keys = require('../config/keys');
 
-const truck = keys.db.truck;
-const admin = keys.db.admin;
+const user = keys.db.user;
 
-const db = mongoose.connect(truck);
+const db = mongoose.connect(user);
 
 module.exports = db;
