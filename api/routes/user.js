@@ -22,7 +22,45 @@ router.post('/register', (req, res) => {
    var password = req.body.password;
    var role = req.body.role;
 
-
+    bcrypt.hash(password, saltRounds, function(err, hash){
+        if(role === 'truckDriver'){
+            truckDriver.username = username;
+            truckDriver.password = password;
+            truckDriver.save((err, savedDriver) => {
+                if(err){
+                    console.log(err);
+                    res.status(500).json({
+                        success: false
+                    });
+                }
+                else{
+                    console.log(savedDriver);
+                    res.status(200).json({
+                        success: true
+                    });
+                }
+            });
+        }
+        else if(role === 'public'){
+            publicUser.username = username;
+            publicUser.password = password;
+            publicUser.save((err, savedPublic) => {
+            if(err){
+                console.log(err);
+                res.status(500).json({
+                    success: false
+                });
+            }
+            else{
+                console.log(savedDriver);
+                res.status(200).json({
+                    success: true
+                });
+            }    
+                
+            })
+        }
+    })
 
    /* var newUser = new User();
    newUser.username = username;
