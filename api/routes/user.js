@@ -77,10 +77,97 @@ router.post('/register', (req, res) => {
                 });
             }    
                 
-            })
+            });
         }
-    })
+    });
 
+});
+
+router.post('/login', (req, res) => {
+    var username = req.body.username;
+    var password = req.body.password;
+    var role = req.body.role;
+
+    if(role === 'truckDriver'){
+        Trucker.findOne({username: username}, (err, result) => {
+            if(err)
+                console.log(err);
+            else {
+                console.log(result);
+                if(!result){
+                    res.status(500).json({
+                        exists: false
+                    });
+                }
+
+                else{
+                    var pass = result.password;
+                    //console.log(pass);
+                    bcrypt.compare(password, pass, (err, response) => {
+                        if(err) throw err;
+                        else if(response){
+                            const user = {
+                                username: username
+                            };
+                            
+                            const token = jwt.sign({ user }, 'secret_key');
+                            console.log(token);
+                            res.status(200).json({
+                                token: token
+                            });
+
+                        }
+                        else{
+                            res.status(500).json({
+                                token: null
+                            });
+                        }
+                    });
+                }
+            }
+            
+        });
+    }
+    else if(role === 'public'){
+        Public.findOne({username: username}, (err, result) => {
+            if(err)
+                console.log(err);
+            else {
+                console.log(result);
+                if(!result){
+                    res.status(500).json({
+                        exists: false
+                    });
+                }
+
+                else{
+                    var pass = result.password;
+                    //console.log(pass);
+                    bcrypt.compare(password, pass, (err, response) => {
+                        if(err) throw err;
+                        else if(response){
+                            const user = {
+                                username: username
+                            };
+                            
+                            const token = jwt.sign({ user }, 'secret_key');
+                            console.log(token);
+                            res.status(200).json({
+                                token: token
+                            });
+
+                        }
+                        else{
+                            res.status(500).json({
+                                token: null
+                            });
+                        }
+                    });
+                }
+            }
+            
+        });
+    }
 });
 
 
